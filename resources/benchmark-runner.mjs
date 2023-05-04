@@ -229,7 +229,9 @@ export class BenchmarkRunner {
 
         performance.mark(startLabel);
         const syncStartTime = performance.now();
+        console.time(suite.name + '.' + test.name + '-sync');
         test.run(page);
+        console.timeEnd(suite.name + '.' + test.name + '-sync');
         const syncEndTime = performance.now();
         performance.mark(syncEndLabel);
 
@@ -237,10 +239,12 @@ export class BenchmarkRunner {
 
         performance.mark(asyncStartLabel);
         const asyncStartTime = performance.now();
+        console.time(suite.name + '.' + test.name + '-async');
         setTimeout(() => {
             // Some browsers don't immediately update the layout for paint.
             // Force the layout here to ensure we're measuring the layout time.
             const height = this._frame.contentDocument.body.getBoundingClientRect().height;
+            console.timeEnd(suite.name + '.' + test.name + '-async');
             const asyncEndTime = performance.now();
             const asyncTime = asyncEndTime - asyncStartTime;
             this._frame.contentWindow._unusedHeightValue = height; // Prevent dead code elimination.
